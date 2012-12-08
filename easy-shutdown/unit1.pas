@@ -5,6 +5,7 @@ unit Unit1;
 { Licence: GNU GPL }
 { The Four Actions (Shutdown, Restart, Suspend, Hibernate) were taken from:
       https://gist.github.com/988104
+  The Action Images were taken from 'BRIT ICONS' icons set.
 }
 {TODO:
 

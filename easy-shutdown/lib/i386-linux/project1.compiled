@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<CONFIG>
-  <Compiler Value="/usr/bin/fpc" Date="1341612898"/>
-  <Params Value=" -MObjFPC -Scghi -CX -O1 -g -gl -XX -vewnhi -l -Fi/home/nour/easy-shutdown/lib/i386-linux -Fl/opt/gnome/lib -Fu/usr/share/lazarus/1.0.2/lcl/units/i386-linux/gtk2 -Fu/usr/share/lazarus/1.0.2/lcl/units/i386-linux -Fu/usr/share/lazarus/1.0.2/components/lazutils/lib/i386-linux -Fu/usr/share/lazarus/1.0.2/packager/units/i386-linux -Fu/home/nour/easy-shutdown/ -FU/home/nour/easy-shutdown/lib/i386-linux/ -oeasy-shutdown -dLCL -dLCLgtk2 project1.lpr"/>
-</CONFIG>
