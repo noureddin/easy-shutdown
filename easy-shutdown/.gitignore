@@ -1,4 +1,3 @@
-*.desktop
-easy-shutdown
 lib/*
 backup/*
+easy-shutdown
