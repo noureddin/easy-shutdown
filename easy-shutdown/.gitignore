@@ -1,4 +1,4 @@
 *.desktop
 easy-shutdown
-lib/
-backup/
+lib/*
+backup/*
