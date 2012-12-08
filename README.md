@@ -1,4 +1,1 @@
-lazarus-projects
-================
-
-Lazarus/ObjectPascal Applications..
+Lazarus / ObjectPascal Projects and Applications

@@ -1,0 +1,123 @@
+{unit Unit2;
+
+{$mode objfpc}{$H+}
+
+interface
+
+uses
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, Buttons,
+  StdCtrls, ExtCtrls, Menus;
+
+type
+
+  { TForm2 }
+
+  TForm2 = class(TForm)
+    BitBtn1: TBitBtn;
+    BitBtn2: TBitBtn;
+    BitBtn3: TBitBtn;
+    BitBtn4: TBitBtn;
+    BitBtn5: TBitBtn;
+    BitBtn6: TBitBtn;
+    Button1: TButton;
+    ComboBox2: TComboBox;
+    Label1: TLabel;
+    Label2: TLabel;
+    MenuItem1: TMenuItem;
+    MenuItem2: TMenuItem;
+    PopupMenu1: TPopupMenu;
+    Timer1: TTimer;
+    TrayIcon1: TTrayIcon;
+    procedure BitBtn1Click(Sender: TObject);
+    procedure BitBtn2Click(Sender: TObject);
+    procedure BitBtn3Click(Sender: TObject);
+    procedure BitBtn4Click(Sender: TObject);
+    procedure BitBtn5Click(Sender: TObject);
+    procedure BitBtn6Click(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
+    procedure Timer1Timer(Sender: TObject);
+  private
+    { private declarations }
+  public
+    { public declarations }
+  end;
+
+var
+  Form2: TForm2;
+  job: string;
+  i: Integer;
+
+implementation
+
+{$R *.lfm}
+
+{ TForm2 }
+procedure power(action: string);
+begin
+case lowercase(action) of
+{'logout': fpsystem('killall `w -f | grep tty | awk '{print $7 }'`');
+'lockscreen': fpsystem('for i in `ls /usr/bin/*screensaver`; do if [ ! -z `pidof $i` ] ; then ${i}-command -l ; fi ;done');
+'shutdown': fpsystem('dbus-send --system --print-reply --dest=org.freedesktop.ConsoleKit /org/freedesktop/ConsoleKit/Manager org.freedesktop.ConsoleKit.Manager.Stop');
+'restart': fpsystem('dbus-send --system --print-reply --dest=org.freedesktop.ConsoleKit /org/freedesktop/ConsoleKit/Manager org.freedesktop.ConsoleKit.Manager.Restart');
+'suspend': fpsystem('dbus-send --system --print-reply --dest=org.freedesktop.UPower /org/freedesktop/UPower org.freedesktop.UPower.Suspend');
+'hibernate': fpsystem('dbus-send --system --print-reply --dest=org.freedesktop.UPower /org/freedesktop/UPower org.freedesktop.UPower.Hibernate');
+}
+'logout': showmessage('Logout');
+'lockscreen': showmessage('LockScreen');
+'shutdown': showmessage('Shudown');
+'restart': showmessage('Restart');
+'suspend': showmessage('Suspend');
+'hibernate': showmessage('Hibernate');
+end;
+end;
+
+
+procedure TForm2.FormActivate(Sender: TObject);
+begin
+//     for i in [1,2,3,5,7,10,15,20,30,40,45,60] do
+//      combobox1.AddItem(inttostr(i),combobox2);
+end;
+
+procedure TForm2.Timer1Timer(Sender: TObject);
+begin
+     timer1.Enabled:=false;
+     power(job);
+end;
+
+procedure TForm2.BitBtn1Click(Sender: TObject);
+begin
+     PressBtn('Shutdown');
+end;
+
+procedure TForm2.BitBtn2Click(Sender: TObject);
+begin
+       PressBtn('Restart');
+end;
+
+procedure TForm2.BitBtn3Click(Sender: TObject);
+begin
+      PressBtn('Logout');
+end;
+
+procedure TForm2.BitBtn4Click(Sender: TObject);
+begin
+      PressBtn('Suspend');
+end;
+
+procedure TForm2.BitBtn5Click(Sender: TObject);
+begin
+     PressBtn('Hibernate');
+end;
+
+procedure TForm2.BitBtn6Click(Sender: TObject);
+begin
+       PressBtn('LockScreen');
+end;
+
+procedure TForm2.Button1Click(Sender: TObject);
+begin
+    Close;
+end;
+
+        }
