@@ -3,10 +3,13 @@ unit Unit1;
 {$mode objfpc}{$H+}
 
 { Licence: GNU GPL }
+
 { The Four Actions (Shutdown, Restart, Suspend, Hibernate) were taken from:
       https://gist.github.com/988104
+
   The Action Images were taken from 'BRIT ICONS' icons set.
 }
+
 {TODO:
 
 SwitchUser support
@@ -14,11 +17,21 @@ Windows Support
 Internationalization (Be MultiLingual)
 Add a Time bar (to show how much remain)
 Add an 'About' and 'LanguageSetting' Screens
+CLI Support
+Support 'Stop and Close' in CLI when pressing ^C , ^X or ...
 Support Pressing ESC to Exit
 Improve the Icon ;)
 
 }
+
 { After Compiling: do 'strip' and 'upx' to make it smaller }
+
+{ Exit On Pressing ESC:
+if Key = 27 then { 27 refers to ESCAPE, See VK_ESCAPE in LCLType }
+   Close;
+On KeyDown or KeyUP
+}
+
 interface
 
 uses
@@ -98,7 +111,7 @@ begin
   end;
 end;
 
-{procedure PressBtn(action: string); // Causes errors
+{procedure PressBtn(action: string); // This Procedure Causes errors
 begin
 try
     if (ComboBox2.text <> '') and (strtofloat(ComboBox2.Text)<> 0) then
@@ -118,7 +131,8 @@ except
     combobox2.SetFocus;
 end;
 end;}
-{procedure comboauto(combo, key: string); //ComboBoxAutoComplete
+
+{procedure comboauto(combo, key: string); // ComboBoxAutoComplete Procedure
 begin
      comb
 end;
@@ -201,6 +215,7 @@ procedure TForm1.Button2Click(Sender: TObject);
 begin
    Close;
 end;
+
 procedure TForm1.ComboBox1KeyUp(Sender: TObject);
 begin
   case lowercase(copy(combobox1.Text,1,3)) of
@@ -224,7 +239,7 @@ begin
      if ParamStr(1) = '' then
         ComboBox1.SetFocus;
      for i in [1,2,3,5,7,10,15,20,30,40,45,60] do
-             combobox2.AddItem(inttostr(i),combobox2);
+             ComboBox2.AddItem(inttostr(i),ComboBox2);
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
@@ -253,6 +268,8 @@ begin
             Label2.Top:=229;
            end;
       end;
+      Left:=(Screen.Width - Width) Div 2;
+      Top:=(Screen.Height - Height) Div 2;
 end;
 
 procedure TForm1.MenuItem1Click(Sender: TObject);
@@ -273,12 +290,11 @@ begin
           False:
             Show;
      end;
-
 end;
 
 procedure TForm1.Timer1Timer(Sender: TObject);
 begin
-  timer1.Enabled:=false;
+  Timer1.Enabled:=False;
   power(job);
   Close;
 end;
