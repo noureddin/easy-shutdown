@@ -9,7 +9,8 @@ object Form1: TForm1
   ClientWidth = 215
   OnActivate = FormActivate
   OnCreate = FormCreate
-  LCLVersion = '1.0.2.0'
+  OnKeyUp = FormKeyUp
+  LCLVersion = '1.0.4.0'
   object Button1: TButton
     Left = 128
     Height = 25
@@ -18,6 +19,7 @@ object Form1: TForm1
     Caption = 'OK'
     Default = True
     OnClick = Button1Click
+    OnKeyUp = FormKeyUp
     TabOrder = 1
   end
   object ComboBox1: TComboBox
@@ -45,6 +47,7 @@ object Form1: TForm1
     Width = 75
     Caption = 'Cancel'
     OnClick = Button2Click
+    OnKeyUp = FormKeyUp
     TabOrder = 2
   end
   object Label1: TLabel
@@ -75,6 +78,7 @@ object Form1: TForm1
     Top = 40
     Width = 85
     ItemHeight = 0
+    OnKeyUp = FormKeyUp
     TabOrder = 3
   end
   object ProgressBar1: TProgressBar
@@ -385,6 +389,7 @@ object Form1: TForm1
     }
     Layout = blGlyphTop
     OnClick = BitBtn1Click
+    OnKeyUp = FormKeyUp
     TabOrder = 5
     Visible = False
   end
@@ -688,6 +693,7 @@ object Form1: TForm1
     }
     Layout = blGlyphTop
     OnClick = BitBtn2Click
+    OnKeyUp = FormKeyUp
     TabOrder = 6
     Visible = False
   end
@@ -991,6 +997,7 @@ object Form1: TForm1
     }
     Layout = blGlyphTop
     OnClick = BitBtn3Click
+    OnKeyUp = FormKeyUp
     TabOrder = 7
     Visible = False
   end
@@ -1294,6 +1301,7 @@ object Form1: TForm1
     }
     Layout = blGlyphTop
     OnClick = BitBtn4Click
+    OnKeyUp = FormKeyUp
     TabOrder = 8
     Visible = False
   end
@@ -1597,6 +1605,7 @@ object Form1: TForm1
     }
     Layout = blGlyphTop
     OnClick = BitBtn5Click
+    OnKeyUp = FormKeyUp
     TabOrder = 9
     Visible = False
   end
@@ -1900,6 +1909,7 @@ object Form1: TForm1
     }
     Layout = blGlyphTop
     OnClick = BitBtn6Click
+    OnKeyUp = FormKeyUp
     TabOrder = 10
     Visible = False
   end

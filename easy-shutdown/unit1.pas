@@ -19,18 +19,13 @@ Add a Time bar (to show how much remain)
 Add an 'About' and 'LanguageSetting' Screens
 CLI Support
 Support 'Stop and Close' in CLI when pressing ^C , ^X or ...
-Support Pressing ESC to Exit
 Improve the Icon ;)
+Show the tray popup menu above the bar not over it
+Remote Control
 
 }
 
 { After Compiling: do 'strip' and 'upx' to make it smaller }
-
-{ Exit On Pressing ESC:
-if Key = 27 then { 27 refers to ESCAPE, See VK_ESCAPE in LCLType }
-   Close;
-On KeyDown or KeyUP
-}
 
 interface
 
@@ -69,9 +64,10 @@ type
     procedure BitBtn6Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
-    procedure ComboBox1KeyUp(Sender: TObject);
+    procedure ComboBox1KeyUp(Sender: TObject; var Key: Word);
     procedure FormActivate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure FormKeyUp(Sender: TObject; var Key: Word);
     procedure MenuItem1Click(Sender: TObject);
     procedure MenuItem2Click(Sender: TObject);
     procedure SysTrayIconClick(Sender: TObject);
@@ -216,7 +212,7 @@ begin
    Close;
 end;
 
-procedure TForm1.ComboBox1KeyUp(Sender: TObject);
+procedure TForm1.ComboBox1KeyUp(Sender: TObject; var Key: Word);
 begin
   case lowercase(copy(combobox1.Text,1,3)) of
        'log':
@@ -232,6 +228,8 @@ begin
        'h','hi','hib':
          combobox1.text:='Hibernate';
   end;
+  if Key = 27 then { 27 refers to ESCAPE, See VK_ESCAPE in LCLType }
+     Close;
 end;
 
 procedure TForm1.FormActivate(Sender: TObject);
@@ -270,6 +268,12 @@ begin
       end;
       Left:=(Screen.Width - Width) Div 2;
       Top:=(Screen.Height - Height) Div 2;
+end;
+
+procedure TForm1.FormKeyUp(Sender: TObject; var Key: Word);
+begin
+  if Key = 27 then { 27 refers to ESCAPE, See VK_ESCAPE in LCLType }
+   Close;
 end;
 
 procedure TForm1.MenuItem1Click(Sender: TObject);
