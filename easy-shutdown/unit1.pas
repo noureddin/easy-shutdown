@@ -12,8 +12,8 @@ unit Unit1;
 
 {TODO:
 
-SwitchUser support
-Windows Support
+When type in the combobox and it completes what typed, Don't move the pointer to the beginning.
+Windows Support (not finished yet)
 Internationalization (Be MultiLingual)
 Add a Time bar (to show how much remain)
 Add an 'About' and 'LanguageSetting' Screens
@@ -33,7 +33,10 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, Menus, ComCtrls, Buttons, Unix;
+  ExtCtrls, Menus, ComCtrls, Buttons
+  {$ifdef Unix} ,Unix {$endif}
+  {$ifdef Windows} ,Process{$endif}
+  ;
 
 type
 
@@ -89,7 +92,10 @@ var
   Form1: TForm1;
   job: string;
   i: integer;
-  sws: integer; // If SwitchUser Supported, See TForm1.FormCreate()
+  spt: array [1 .. 7] of Boolean; // spt stands for supported, See TFrom1.FormCreate()
+{$ifdef Windows}
+  AProcess: TProcess;
+{$endif}
 //  d: time;
 implementation
 
@@ -97,8 +103,19 @@ implementation
 
 { TForm1 }
 
+{$ifdef Windows} //This is cross-platform, but fpsystem is better with unix ;)
+procedure executecmd(cmd: string);
+begin
+  AProcess := TProcess.Create(nil);
+  AProcess.CommandLine := cmd;
+  AProcess.Options := AProcess.Options + [poWaitOnExit];
+  AProcess.Execute;
+  AProcess.Free;
+end;
+{$endif}
 procedure power(action: string);
 begin
+{$ifdef Unix}
   case lowercase(action) of
   'logout': fpsystem('killall -u $USER');
   'lockscreen': fpsystem('for i in `ls /usr/bin/*screensaver`; do if [ ! -z `pidof $i` ] ; then ${i}-command -l ; fi ;done');
@@ -107,68 +124,48 @@ begin
   'restart': fpsystem('dbus-send --system --print-reply --dest=org.freedesktop.ConsoleKit /org/freedesktop/ConsoleKit/Manager org.freedesktop.ConsoleKit.Manager.Restart');
   'suspend': fpsystem('dbus-send --system --print-reply --dest=org.freedesktop.UPower /org/freedesktop/UPower org.freedesktop.UPower.Suspend');
   'hibernate': fpsystem('dbus-send --system --print-reply --dest=org.freedesktop.UPower /org/freedesktop/UPower org.freedesktop.UPower.Hibernate');
-  { //for testing only
-  'logout': showmessage('Logout');
-  'lockscreen': showmessage('LockScreen');
-  'switchuser': showmessage('SwitchUser');
-  'shutdown': showmessage('Shudown');
-  'restart': showmessage('Restart');
-  'suspend': showmessage('Suspend');
-  'hibernate': showmessage('Hibernate');}
   end;
+{$endif}{$ifdef Windows}
+  case lowercase(action) of
+  'logout': executecmd('shutdown /l');
+  'lockscreen': executecmd('rundll32.exe user32.dll,LockWorkStation');
+  'switchuser': executecmd('');
+  'shutdown': executecmd('shutdown /s');
+  'restart': executecmd('shutdown /r');
+  'suspend': executecmd('rundll32.exe powrprof.dll,SetSuspendState Standby');
+  'hibernate': executecmd('shutdown /h');
+  end;
+{$endif}
 end;
-
-{procedure PressBtn(action: string); // This Procedure Causes errors
-begin
-try
-    if (ComboBox2.text <> '') and (strtofloat(ComboBox2.Text)<> 0) then
-    begin
-      Timer1.Enabled:=true;
-      Timer1.Interval:=strtoint(floattostr(strtofloat(ComboBox2.Text) * 60000));
-      job:=action;
-    end
-    else
-      power(action);
-
-      Hide;
-    SysTrayIcon.Show;
-
-except
-    showmessage('Please, Enter a Number!');
-    combobox2.SetFocus;
-end;
-end;}
 
 {procedure comboauto(combo, key: string); // ComboBoxAutoComplete Procedure
 begin
-     comb
-end;
- }
+
+end;}
+
 procedure TForm1.Button1Click(Sender: TObject);
 begin
    case LowerCase(ComboBox1.Text) of
     'logout','switchuser','lockscreen','shutdown','restart','suspend','hibernate':
      begin
       try
-//          PressBtn(ComboBox1.Text);
-    if (ComboBox2.text <> '') and (strtofloat(ComboBox2.Text)<> 0) then
-    begin
-      Timer1.Enabled:=true;
-      Timer1.Interval:=strtoint(floattostr(strtofloat(ComboBox2.Text) * 60000));
-      job:=ComboBox1.Text;
-      Hide;
-      SysTrayIcon.Show;
-    end
-    else
-    begin
-      power(ComboBox1.Text);
-      Close;
-    end;
-
+        if (ComboBox2.text <> '') and (strtofloat(ComboBox2.Text)<> 0) then
+        begin
+          Timer1.Enabled:=true;
+          Timer1.Interval:=strtoint(floattostr(strtofloat(ComboBox2.Text) * 60000));
+          job:=ComboBox1.Text;
+          Hide;
+          SysTrayIcon.Show;
+        end
+        else
+        begin
+          power(ComboBox1.Text);
+          Close;
+        end;
       except
-          ShowMessage('Please, Enter a Number!');
-          ComboBox2.SetFocus;
-end;
+        ShowMessage('Please, Enter a Number!');
+        ComboBox2.SetFocus;
+      end;
      end
    else
         ShowMessage('Please, Choose want you want to do!');
@@ -178,35 +175,30 @@ end;
 
 procedure TForm1.BitBtn1Click(Sender: TObject);
 begin
-//       PressBtn('Shutdown');
          ComboBox1.Text:='Shutdown';
          Button1Click(Button1);
 end;
 
 procedure TForm1.BitBtn2Click(Sender: TObject);
 begin
-  //     PressBtn('Restart');
          ComboBox1.Text:='Restart';
          Button1Click(Button1);
 end;
 
 procedure TForm1.BitBtn3Click(Sender: TObject);
 begin
-    //    PressBtn('Logout');
           ComboBox1.Text:='Logout';
           Button1Click(Button1);
 end;
 
 procedure TForm1.BitBtn4Click(Sender: TObject);
 begin
-      //PressBtn('Suspend');
         ComboBox1.Text:='Suspend';
         Button1Click(Button1);
 end;
 
 procedure TForm1.BitBtn5Click(Sender: TObject);
 begin
-//      PressBtn('Hibernate');
         ComboBox1.Text:='Hibernate';
         Button1Click(Button1);
 end;
@@ -233,11 +225,12 @@ begin
   case LowerCase(Copy(ComboBox1.Text,1,3)) of
        'log':
          ComboBox1.Text:='Logout';
-       'loc':
-         ComboBox1.Text:='LockScreen';
-       'sw','swi','swit':
-         if sws = 0 then
+       'sw','swi':
+         if spt[2] then
             ComboBox1.Text:='SwitchUser';
+       'loc':
+         if spt[3] then
+            ComboBox1.Text:='LockScreen';
        'sh','shu':
          ComboBox1.Text:='Shutdown';
        'r','re','res':
@@ -257,11 +250,10 @@ begin
      begin
           ComboBox1.SetFocus;
           ComboBox1.AddItem('Logout',ComboBox1);
-          ComboBox1.AddItem('LockScreen',ComboBox1);
-          if sws = 0 then
-          begin
+          if spt[2] = True then
                     ComboBox1.AddItem('SwitchUser',ComboBox1);
-          end;
+          if spt[3] = True then
+                    ComboBox1.AddItem('LockScreen',ComboBox1);
           ComboBox1.AddItem('Shutdown',ComboBox1);
           ComboBox1.AddItem('Restart',ComboBox1);
           ComboBox1.AddItem('Suspend',ComboBox1);
@@ -273,8 +265,33 @@ end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-  sws:=fpsystem('for i in `ls /usr/sbin/*dm`; do if [ ! -z "`pidof $i`" ] ; then case $i in /usr/sbin/lightdm);;/usr/sbin/mdm);;/usr/sbin/gdm);;*)exit 2;;esac;fi;done'); //Check if the current display manager is supported, (sws stands for switch user support), (stores 0 if supported).
-      case ParamStr(1) of
+//Begin: Check what actions supported
+//Note: 1~7 is logout, switchuser, lockscreen, shutdown, restart, suspend, hibernate (sorted)
+{$ifdef Unix}
+    spt[1]:=True;
+    if fpsystem('for i in `ls /usr/sbin/*dm`; do if [ ! -z "`pidof $i`" ] ; then case $i in /usr/sbin/lightdm);;/usr/sbin/mdm);;/usr/sbin/gdm);;*)exit 2;;esac;fi;done') = 0 then
+       spt[2]:=True;
+    if fpsystem('for i in `ls /usr/bin/*screensaver`; do if [ ! -z `pidof $i` ] ; then if [ ! -e "${i}-command" ] ; then exit 2 ;fi;fi;done') = 0 then
+       spt[3]:=True;
+    spt[4]:=True;
+    spt[5]:=True;
+    spt[6]:=True;
+    spt[7]:=True;
+{$endif}
+{$ifdef Windows}
+    spt[1]:=True;
+    if 1 = 0 then
+       spt[2]:=True;
+//    if fpsystem('') = 0 then
+       spt[3]:=True;
+    spt[4]:=True;
+    spt[5]:=True;
+    spt[6]:=True;
+    spt[7]:=True;
+{$endif}
+
+//End
+        case ParamStr(1) of
            '-exit':
            begin
             BorderStyle:=bsNone;
@@ -291,11 +308,11 @@ begin
             BitBtn4.Visible:=True;
             BitBtn5.Visible:=True;
             BitBtn6.Visible:=True;
-            if sws = 0 then
-            begin
+            if spt[2] = True then
                  BitBtn6.Enabled:=True;
-            end;
             BitBtn7.Visible:=True;
+            if spt[3] = True then
+                 BitBtn7.Enabled:=True;
             Label1.Left:=40;
             ComboBox2.Left:=69;
             Label2.Left:=154;
