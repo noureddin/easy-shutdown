@@ -13,21 +13,7 @@ uses
 { // All Commented Code (expect the 'Interfaces, Line') is for the CLI,..
 procedure power(action: string);
 begin
-  case lowercase(action) of
-  'logout': fpsystem('killall `w -f | grep tty | awk ''{print $7 }''`');
-  'lockscreen': fpsystem('for i in `ls /usr/bin/*screensaver`; do if [ ! -z `pidof $i` ] ; then ${i}-command -l ; fi ;done');
-  'shutdown': fpsystem('dbus-send --system --print-reply --dest=org.freedesktop.ConsoleKit /org/freedesktop/ConsoleKit/Manager org.freedesktop.ConsoleKit.Manager.Stop');
-  'restart': fpsystem('dbus-send --system --print-reply --dest=org.freedesktop.ConsoleKit /org/freedesktop/ConsoleKit/Manager org.freedesktop.ConsoleKit.Manager.Restart');
-  'suspend': fpsystem('dbus-send --system --print-reply --dest=org.freedesktop.UPower /org/freedesktop/UPower org.freedesktop.UPower.Suspend');
-  'hibernate': fpsystem('dbus-send --system --print-reply --dest=org.freedesktop.UPower /org/freedesktop/UPower org.freedesktop.UPower.Hibernate');
-  { //for testing only
-  'logout': WriteLn('Logout');
-  'lockscreen': WriteLn('LockScreen');
-  'shutdown': WriteLn('Shudown');
-  'restart': WriteLn('Restart');
-  'suspend': WriteLn('Suspend');
-  'hibernate': WriteLn('Hibernate');}
-  end;
+//copy it from the unit :P
 end;
 }
 begin

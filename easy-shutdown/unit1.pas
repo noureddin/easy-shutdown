@@ -100,7 +100,7 @@ implementation
 procedure power(action: string);
 begin
   case lowercase(action) of
-  'logout': fpsystem('killall `w -f | grep tty | awk ''{print $7 }''`');
+  'logout': fpsystem('killall -u $USER');
   'lockscreen': fpsystem('for i in `ls /usr/bin/*screensaver`; do if [ ! -z `pidof $i` ] ; then ${i}-command -l ; fi ;done');
   'switchuser': fpsystem('for i in `ls /usr/sbin/*dm`; do if [ ! -z "`pidof $i`" ] ; then case $i in /usr/sbin/lightdm)dm-tool switch-to-greeter;;/usr/sbin/mdm)mdmflexiserver;;/usr/sbin/gdm)gdmflexiserver;;esac;fi;done');
   'shutdown': fpsystem('dbus-send --system --print-reply --dest=org.freedesktop.ConsoleKit /org/freedesktop/ConsoleKit/Manager org.freedesktop.ConsoleKit.Manager.Stop');
