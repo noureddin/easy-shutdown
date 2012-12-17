@@ -22,6 +22,8 @@ Support 'Stop and Close' in CLI when pressing ^C , ^X or ...
 Improve the Icon ;)
 Show the tray popup menu above the bar not over it
 Remote Control
+Support delaying to time (like: shutdown at 8:00 am)
+Support Scheduling (like: shutdown everyday at 10:00 pm)
 
 }
 
@@ -44,6 +46,7 @@ type
     BitBtn4: TBitBtn;
     BitBtn5: TBitBtn;
     BitBtn6: TBitBtn;
+    BitBtn7: TBitBtn;
     Button1: TButton;
     Button2: TButton;
     ComboBox1: TComboBox;
@@ -56,12 +59,14 @@ type
     ProgressBar1: TProgressBar;
     Timer1: TTimer;
     SysTrayIcon: TTrayIcon;
+    Timer2: TTimer;
     procedure BitBtn1Click(Sender: TObject);
     procedure BitBtn2Click(Sender: TObject);
     procedure BitBtn3Click(Sender: TObject);
     procedure BitBtn4Click(Sender: TObject);
     procedure BitBtn5Click(Sender: TObject);
     procedure BitBtn6Click(Sender: TObject);
+    procedure BitBtn7Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure ComboBox1KeyUp(Sender: TObject; var Key: Word);
@@ -71,7 +76,9 @@ type
     procedure MenuItem1Click(Sender: TObject);
     procedure MenuItem2Click(Sender: TObject);
     procedure SysTrayIconClick(Sender: TObject);
+    procedure Timer1StartTimer(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
+    procedure Timer2Timer(Sender: TObject);
   private
     { private declarations }
   public
@@ -82,6 +89,8 @@ var
   Form1: TForm1;
   job: string;
   i: integer;
+  sws: integer; // If SwitchUser Supported, See TForm1.FormCreate()
+//  d: time;
 implementation
 
 {$R *.lfm}
@@ -93,6 +102,7 @@ begin
   case lowercase(action) of
   'logout': fpsystem('killall `w -f | grep tty | awk ''{print $7 }''`');
   'lockscreen': fpsystem('for i in `ls /usr/bin/*screensaver`; do if [ ! -z `pidof $i` ] ; then ${i}-command -l ; fi ;done');
+  'switchuser': fpsystem('for i in `ls /usr/sbin/*dm`; do if [ ! -z "`pidof $i`" ] ; then case $i in /usr/sbin/lightdm)dm-tool switch-to-greeter;;/usr/sbin/mdm)mdmflexiserver;;/usr/sbin/gdm)gdmflexiserver;;esac;fi;done');
   'shutdown': fpsystem('dbus-send --system --print-reply --dest=org.freedesktop.ConsoleKit /org/freedesktop/ConsoleKit/Manager org.freedesktop.ConsoleKit.Manager.Stop');
   'restart': fpsystem('dbus-send --system --print-reply --dest=org.freedesktop.ConsoleKit /org/freedesktop/ConsoleKit/Manager org.freedesktop.ConsoleKit.Manager.Restart');
   'suspend': fpsystem('dbus-send --system --print-reply --dest=org.freedesktop.UPower /org/freedesktop/UPower org.freedesktop.UPower.Suspend');
@@ -100,6 +110,7 @@ begin
   { //for testing only
   'logout': showmessage('Logout');
   'lockscreen': showmessage('LockScreen');
+  'switchuser': showmessage('SwitchUser');
   'shutdown': showmessage('Shudown');
   'restart': showmessage('Restart');
   'suspend': showmessage('Suspend');
@@ -135,8 +146,8 @@ end;
  }
 procedure TForm1.Button1Click(Sender: TObject);
 begin
-   case combobox1.text of
-    'Logout','LockScreen','Shutdown','Restart','Suspend','Hibernate':
+   case LowerCase(ComboBox1.Text) of
+    'logout','switchuser','lockscreen','shutdown','restart','suspend','hibernate':
      begin
       try
 //          PressBtn(ComboBox1.Text);
@@ -169,42 +180,47 @@ procedure TForm1.BitBtn1Click(Sender: TObject);
 begin
 //       PressBtn('Shutdown');
          ComboBox1.Text:='Shutdown';
-         Button1Click(Button1)
+         Button1Click(Button1);
 end;
 
 procedure TForm1.BitBtn2Click(Sender: TObject);
 begin
   //     PressBtn('Restart');
          ComboBox1.Text:='Restart';
-         Button1Click(Button1)
+         Button1Click(Button1);
 end;
 
 procedure TForm1.BitBtn3Click(Sender: TObject);
 begin
     //    PressBtn('Logout');
           ComboBox1.Text:='Logout';
-          Button1Click(Button1)
+          Button1Click(Button1);
 end;
 
 procedure TForm1.BitBtn4Click(Sender: TObject);
 begin
       //PressBtn('Suspend');
         ComboBox1.Text:='Suspend';
-        Button1Click(Button1)
+        Button1Click(Button1);
 end;
 
 procedure TForm1.BitBtn5Click(Sender: TObject);
 begin
 //      PressBtn('Hibernate');
         ComboBox1.Text:='Hibernate';
-        Button1Click(Button1)
+        Button1Click(Button1);
 end;
 
 procedure TForm1.BitBtn6Click(Sender: TObject);
 begin
-  //    PressBtn('LockScreen');
-        ComboBox1.Text:='LockScreen';
-        Button1Click(Button1)
+     ComboBox1.Text:='SwitchUser';
+     Button1Click(Button1);
+end;
+
+procedure TForm1.BitBtn7Click(Sender: TObject);
+begin
+     ComboBox1.Text:='LockScreen';
+     Button1Click(Button1);
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);
@@ -214,19 +230,22 @@ end;
 
 procedure TForm1.ComboBox1KeyUp(Sender: TObject; var Key: Word);
 begin
-  case lowercase(copy(combobox1.Text,1,3)) of
+  case LowerCase(Copy(ComboBox1.Text,1,3)) of
        'log':
-         combobox1.text:='Logout';
+         ComboBox1.Text:='Logout';
        'loc':
-         combobox1.text:='LockScreen';
+         ComboBox1.Text:='LockScreen';
+       'sw','swi','swit':
+         if sws = 0 then
+            ComboBox1.Text:='SwitchUser';
        'sh','shu':
-         combobox1.Text:='Shutdown';
+         ComboBox1.Text:='Shutdown';
        'r','re','res':
-         combobox1.text:='Restart';
+         ComboBox1.Text:='Restart';
        'su','sus':
-         combobox1.text:='Suspend';
+         ComboBox1.Text:='Suspend';
        'h','hi','hib':
-         combobox1.text:='Hibernate';
+         ComboBox1.Text:='Hibernate';
   end;
   if Key = 27 then { 27 refers to ESCAPE, See VK_ESCAPE in LCLType }
      Close;
@@ -235,29 +254,48 @@ end;
 procedure TForm1.FormActivate(Sender: TObject);
 begin
      if ParamStr(1) = '' then
-        ComboBox1.SetFocus;
+     begin
+          ComboBox1.SetFocus;
+          ComboBox1.AddItem('Logout',ComboBox1);
+          ComboBox1.AddItem('LockScreen',ComboBox1);
+          if sws = 0 then
+          begin
+                    ComboBox1.AddItem('SwitchUser',ComboBox1);
+          end;
+          ComboBox1.AddItem('Shutdown',ComboBox1);
+          ComboBox1.AddItem('Restart',ComboBox1);
+          ComboBox1.AddItem('Suspend',ComboBox1);
+          ComboBox1.AddItem('Hibernate',ComboBox1);
+     end;
      for i in [1,2,3,5,7,10,15,20,30,40,45,60] do
              ComboBox2.AddItem(inttostr(i),ComboBox2);
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
+  sws:=fpsystem('for i in `ls /usr/sbin/*dm`; do if [ ! -z "`pidof $i`" ] ; then case $i in /usr/sbin/lightdm);;/usr/sbin/mdm);;/usr/sbin/gdm);;*)exit 2;;esac;fi;done'); //Check if the current display manager is supported, (sws stands for switch user support), (stores 0 if supported).
       case ParamStr(1) of
            '-exit':
            begin
             BorderStyle:=bsNone;
             ComboBox1.Visible:=False;
             Button1.Visible:=False;
-            Button2.Top:=224;
-            Button2.Left:=264;
+            Button2.Top:=229;
+            Button2.Left:=280;
+            Button2.Width:=91;
             Height:=264;
-            Width:=375;
+            Width:=392;
             BitBtn1.Visible:=True;
             BitBtn2.Visible:=True;
             BitBtn3.Visible:=True;
             BitBtn4.Visible:=True;
             BitBtn5.Visible:=True;
             BitBtn6.Visible:=True;
+            if sws = 0 then
+            begin
+                 BitBtn6.Enabled:=True;
+            end;
+            BitBtn7.Visible:=True;
             Label1.Left:=40;
             ComboBox2.Left:=69;
             Label2.Left:=154;
@@ -296,11 +334,22 @@ begin
      end;
 end;
 
+procedure TForm1.Timer1StartTimer(Sender: TObject);
+begin
+  //  d:=now();
+end;
+
 procedure TForm1.Timer1Timer(Sender: TObject);
 begin
+
   Timer1.Enabled:=False;
   power(job);
   Close;
+end;
+
+procedure TForm1.Timer2Timer(Sender: TObject);
+begin
+//    ProgressBar1.position:=Timer1.Interval { past time - interval (gives remain) / interval (gives the percentage for the remain) * 100 ( to convert .5 to 50) [ and all toInt() ;) ]
 end;
 
 end.
