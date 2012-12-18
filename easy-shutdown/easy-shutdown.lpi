@@ -35,20 +35,24 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="2">
+    <Units Count="3">
       <Unit0>
-        <Filename Value="project1.lpr"/>
+        <Filename Value="easy-shutdown.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="project1"/>
       </Unit0>
       <Unit1>
-        <Filename Value="unit1.pas"/>
+        <Filename Value="guiform.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="Form1"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="Unit1"/>
+        <UnitName Value="GUIForm"/>
       </Unit1>
+      <Unit2>
+        <Filename Value="powerunit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="PowerUnit"/>
+      </Unit2>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

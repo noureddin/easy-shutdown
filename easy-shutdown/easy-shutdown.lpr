@@ -1,4 +1,4 @@
-program project1;
+program easy_shutdown;
 
 {$mode objfpc}{$H+}
 
@@ -7,7 +7,7 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, Unit1 {, Unix, SysUtils} ;
+  Forms, GUIForm, PowerUnit {, Unix, SysUtils} ;
 
 {$R *.res}
 { // All Commented Code (expect the 'Interfaces, Line') is for the CLI,..
