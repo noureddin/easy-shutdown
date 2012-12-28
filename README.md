@@ -1,7 +1,8 @@
 # Easy Shutdown
-  An easy tool to shutdown, restart and more.. written in Lazarus/ObjectPascal..
+  An easy tool to shutdown, restart and more..
+  Written using Lazarus in ObjectPascal..
 ## Supported Actions
-####  All actions are done without being root!
+#####  All actions are done without being root!
   * Shutdown
   * Restart
   * Suspend
