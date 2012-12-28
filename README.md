@@ -9,6 +9,7 @@
   * Hibernate
   * Logout
   * LockScreen
+
 ## Other Features
   * Delaying Supported
 
