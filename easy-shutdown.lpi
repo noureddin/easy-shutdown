@@ -11,7 +11,7 @@
       <Icon Value="0"/>
     </General>
     <i18n>
-      <EnableI18N LFM="False"/>
+      <OutDir Value="locale"/>
     </i18n>
     <VersionInfo>
       <StringTable ProductVersion=""/>
@@ -35,7 +35,7 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="3">
+    <Units Count="4">
       <Unit0>
         <Filename Value="easy-shutdown.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -53,6 +53,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="PowerUnit"/>
       </Unit2>
+      <Unit3>
+        <Filename Value="cliapp.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CLIApp"/>
+      </Unit3>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
